@@ -1,13 +1,15 @@
 <template>
   <div>
-    <ul v-if="simple" :class="prefixCls + ' ' + prefixCls + '-simple ' + className">
+    <ul :class="[prefixCls, className, (simple ? prefixCls+'-simple' : ''), ( !simple && mini ? 'mini' : '')]" unselectable>
+      <span v-if="showTotal" class="ant-pagination-total-text">共 80 条</span>
       <li
         title="Previous Page"
         @click="prev"
         :class="(hasPrev ? '' : `${prefixCls}-disabled `) + prefixCls + '-prev'">
         <a></a>
       </li>
-      <div :title="'Page ' + current + ' of ' + maxPage" :class="`${prefixCls}-simple-pager`">
+
+      <div v-if="simple" :title="'Page ' + current + ' of ' + maxPage" :class="`${prefixCls}-simple-pager`">
         <input type="text"
         v-model="currentInput"
         number
@@ -15,20 +17,10 @@
         <span :class="`${prefixCls}-slash`">/</span>
         {{ maxPage }}
       </div>
-      <li title="Next Page"
-        @click="next"
-        :class="(hasNext ? '' : `${prefixCls}-disabled `) + `${prefixCls}-next`">
-        <a></a>
-      </li>
-    </ul>
-    <ul v-else :class="prefixCls + ' ' + className" unselectable>
-      <li
-        title="Previous Page"
-        @click="prev"
-        :class="(hasPrev ? '' : `${prefixCls}-disabled `) + prefixCls + '-prev'">
-        <a></a>
-      </li>
-      <pager-list :max-page="maxPage" :current="current" :root-prefix-cls="prefixCls" @goto="handleChange"></pager-list>
+      <div v-else>
+        <pager-list :max-page="maxPage" :current="current" :root-prefix-cls="prefixCls" @goto="handleChange"></pager-list>
+      </div>
+
       <li title="Next Page"
         @click="next"
         :class="(hasNext ? '' : `${prefixCls}-disabled `) + `${prefixCls}-next`">
@@ -68,6 +60,14 @@
         default: 'ant-pagination',
         type: String,
       },
+      showTotal: {
+        default: false,
+        type: Boolean,
+      },
+      mini: {
+        default: false,
+        type: Boolean,
+      },
     },
 
     data () {
@@ -106,6 +106,10 @@
       handleChange (page) {
         let _page = page
 
+        if (_page < 1) {
+          _page = 1
+        }
+
         if (this.validatePage(_page)) {
           if (_page > this.maxPage) {
             _page = this.maxPage
@@ -134,7 +138,7 @@
       },
     },
     components: {
-      PagerList
+      PagerList,
     },
   }
 
