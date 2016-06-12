@@ -37,7 +37,11 @@ module.exports = {
           limit: 10000,
           name: '[name].[ext]?[hash]'
         }
-      }
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css!postcss'
+      },
     ]
   },
   devServer: {
@@ -46,7 +50,15 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  postcss() {
+    return [
+      require('postcss-import'),
+      require('postcss-mixins'),
+      require('postcss-simple-vars'),
+      require('postcss-nested'),
+    ]
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {

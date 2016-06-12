@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <pagination simple :current.sync="val" :total="400" @change="changePage"></pagination>
+    <pagination :current.sync="val" :total="400" @change="changePage"></pagination>
   </div>
 </template>
 
